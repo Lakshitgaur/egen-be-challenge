@@ -17,24 +17,26 @@ public class UserService {
 	private final MongoCollection<Document> users;
 	
 	
+	
 	public UserService(final String database,final String UserCollection){
-		getConnection(database,UserCollection);
+		users=getConnection(database,UserCollection);
 	}
 
 
 	private static MongoCollection<Document> getConnection(final String database, final String UserCollection) {
-        final MongoClient client = new MongoClient(new MongoClientURI("mongodb://localhost"));
+        final MongoClient client = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
         MongoDatabase db = client.getDatabase(database);
         MongoCollection<Document> coll = db.getCollection(UserCollection);
         return coll;
     }
 	
-    public void createUser(String json) {
+    public String createUser(String json) {
     	logger.info("parsing the Json data to a document");
         final Document document = Document.parse(json);
        	logger.info("preparing to create a user");
-        users.insertOne(document);
-    }
+       	users.insertOne(document);
+        return "User created successfully";
+    }	
     
     public List<Document> getAllUsers() {
         this.logger.info("Preparing to get users");
@@ -48,12 +50,14 @@ public class UserService {
         return documents;
     }
     
-    public String update(final String data) throws Exception {
+    public Document updateUser(final String data) throws Exception {
         logger.info("Preparing to update the user");
         Document document = Document.parse(data);
         String id = document.getString("id");
         Document user = users.find(eq("id",id)).first();
-    
+        return user;
     }
+    
+	
     
 }
