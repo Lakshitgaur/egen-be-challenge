@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserService {
 	private final Logger logger=LoggerFactory.getLogger(UserService.class);
-	private final MongoCollection<Document> users;
+	public final MongoCollection<Document> users;
 	
 	
 	
@@ -23,7 +23,7 @@ public class UserService {
 	}
 
 
-	private static MongoCollection<Document> getConnection(final String database, final String UserCollection) {
+	public static MongoCollection<Document> getConnection(final String database, final String UserCollection) {
         final MongoClient client = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
         MongoDatabase db = client.getDatabase(database);
         MongoCollection<Document> coll = db.getCollection(UserCollection);
@@ -55,6 +55,9 @@ public class UserService {
         Document document = Document.parse(data);
         String id = document.getString("id");
         Document user = users.find(eq("id",id)).first();
+        if (user != null) {
+            users.updateOne(user, new Document("$set", document));
+        }
         return user;
     }
     
