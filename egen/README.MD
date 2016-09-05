@@ -1,4 +1,4 @@
-**Egen Coding Challenge – Level 1**
+
 
 **Restful web service for User Management application using **:
 •	Spark Java http://sparkjava.com/ and
